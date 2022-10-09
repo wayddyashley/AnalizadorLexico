@@ -5,18 +5,48 @@
 package codigo;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
  * @author washl
  */
 public class Principal {
-    public static void main(String[] args) {
-        String ruta ="C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/Lexer.flex";
-        generarLexer(ruta);
+    public static void main(String[] args) throws Exception {
+        String ruta1 ="C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/Lexer.flex";
+        String ruta2 ="C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/LexerCup.flex";
+        String [] rutaS = {"-parser", "Sintax", "C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/Sintax.cup"};
+        generar(ruta1, ruta2, rutaS);
     }
-    public static void generarLexer(String ruta){
-        File archivo = new File(ruta);
+    public static void generar(String ruta1, String ruta2, String[] rutaS) throws IOException, Exception{
+        File archivo;
+        archivo = new File(ruta1);
         JFlex.Main.generate(archivo);
+        archivo = new File(ruta2);
+        JFlex.Main.generate(archivo);
+        java_cup.Main.main(rutaS);
+        
+        Path rutaSym = Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/sym.java");
+        if (Files.exists(rutaSym)) {
+            Files.delete(rutaSym);
+        }
+        
+        Files.move(
+                Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/sym.java"), 
+                Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/sym.java")
+        );
+        
+        Path rutaSin = Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/Sintax.java");
+        if (Files.exists(rutaSin)) {
+            Files.delete(rutaSin);
+        }
+        
+        
+        Files.move(
+                Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/Sintax.java"), 
+                Path.of("C:/Users/washl/OneDrive/Documents/NetBeansProjects/AnalizadorLexico/src/codigo/Sintax.java")
+        );
     }
 }
